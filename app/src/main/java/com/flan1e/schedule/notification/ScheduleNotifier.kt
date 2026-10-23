@@ -4,6 +4,9 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.SystemClock
+import android.view.View
+import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.flan1e.schedule.MainActivity
 import com.flan1e.schedule.R
@@ -40,28 +43,59 @@ class ScheduleNotifier(private val context: Context) {
         val builder = baseBuilder()
             .setContentTitle(content.title)
             .setContentText(content.text)
+            .setShowWhen(false)
 
-        if (content.countdownTargetMillis != null) {
-            builder
-                .setWhen(content.countdownTargetMillis)
-                .setUsesChronometer(true)
-                .setChronometerCountDown(true)
-                .setShowWhen(true)
-        } else {
-            builder.setShowWhen(false)
-        }
-
-        // Полоска прогресса идущей пары: сколько уже прошло от начала до конца.
-        if (content.progressPercent != null) {
-            builder.setProgress(PROGRESS_MAX, content.progressPercent, false)
-        }
-
-        val bigText = content.bigText
-        if (!settings.compactMode && bigText != null) {
-            builder.setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
-        }
+        // Раскладку задаём сами: системный шаблон на Android 16 при наличии
+        // прогресса прячет chronometer и обрезает текст справа от заголовка.
+        builder.setCustomContentView(buildContentViews(content, expanded = false))
+        builder.setCustomBigContentView(buildContentViews(content, expanded = !settings.compactMode))
 
         return builder.build()
+    }
+
+    /**
+     * Собирает содержимое уведомления. В свёрнутом виде видно заголовок,
+     * хронометр, строку отсчёта и полоску прогресса; в развёрнутом добавляется
+     * интервал пары и следующая пара.
+     */
+    private fun buildContentViews(content: NotificationContent, expanded: Boolean): RemoteViews {
+        val views = RemoteViews(context.packageName, R.layout.notification_content)
+        val palette = NotificationPalette.of(context)
+        views.setTextViewText(R.id.notification_title, content.title)
+        views.setTextColor(R.id.notification_title, palette.primary)
+        views.setTextViewText(R.id.notification_text, content.text)
+        views.setTextColor(R.id.notification_text, palette.secondary)
+        views.setTextColor(R.id.notification_extra, palette.secondary)
+        views.setTextColor(R.id.notification_chronometer, palette.secondary)
+
+        val extra = content.bigText
+        if (expanded && !extra.isNullOrBlank()) {
+            views.setTextViewText(R.id.notification_extra, extra)
+            views.setViewVisibility(R.id.notification_extra, View.VISIBLE)
+        }
+
+        val target = content.countdownTargetMillis
+        if (target != null) {
+            val remaining = (target - System.currentTimeMillis()).coerceAtLeast(0L)
+            views.setChronometer(
+                R.id.notification_chronometer,
+                SystemClock.elapsedRealtime() + remaining,
+                null,
+                true,
+            )
+            views.setChronometerCountDown(R.id.notification_chronometer, true)
+        } else {
+            views.setViewVisibility(R.id.notification_chronometer, View.GONE)
+        }
+
+        val progress = content.progressPercent
+        if (progress != null) {
+            views.setProgressBar(R.id.notification_progress, PROGRESS_MAX, progress, false)
+            views.setViewVisibility(R.id.notification_progress, View.VISIBLE)
+        }
+
+        views.setOnClickPendingIntent(R.id.notification_root, openAppIntent())
+        return views
     }
 
     private fun baseBuilder(): NotificationCompat.Builder = NotificationCompat.Builder(
@@ -95,7 +129,6 @@ class ScheduleNotifier(private val context: Context) {
     ): NotificationContent = when (state) {
         is ScheduleState.InProgress -> {
             val lesson = state.current.lesson
-            val details = detailsLine(lesson, settings)
             val countdown = context.getString(
                 R.string.notification_until_end,
                 DurationText.format(context, state.remaining),
@@ -104,7 +137,8 @@ class ScheduleNotifier(private val context: Context) {
             NotificationContent(
                 title = ongoingTitle(lesson, state.current.end.toLocalTime(), settings),
                 text = headlineText(countdown, lesson, settings),
-                bigText = listOfNotNull(details, countdown, following).joinToString("\n"),
+                // Кабинет уже есть в основной строке, здесь — интервал и следующая пара.
+                bigText = listOfNotNull(DateTimeText.timeRange(lesson, context), following).joinToString("\n"),
                 countdownTargetMillis = state.current.end.toEpochMillis(),
                 progressPercent = CountdownCalculator.progressPercent(
                     start = state.current.start,
@@ -116,12 +150,12 @@ class ScheduleNotifier(private val context: Context) {
 
         is ScheduleState.Upcoming -> {
             val lesson = state.next.lesson
-            val details = detailsLine(lesson, settings)
             // Для пары не на сегодня добавляем день, иначе «До начала 14 ч» непонятно когда.
             val dayLine = if (state.next.date == now.toLocalDate()) {
-                details
+                DateTimeText.timeRange(lesson, context)
             } else {
-                DateTimeText.relativeDateLabel(state.next.date, now.toLocalDate(), context) + ", " + details
+                DateTimeText.relativeDateLabel(state.next.date, now.toLocalDate(), context) +
+                    ", " + DateTimeText.timeRange(lesson, context)
             }
             val countdown = context.getString(
                 R.string.notification_until_start,
@@ -131,7 +165,7 @@ class ScheduleNotifier(private val context: Context) {
             NotificationContent(
                 title = upcomingTitle(lesson, settings),
                 text = headlineText(countdown, lesson, settings),
-                bigText = listOfNotNull(dayLine, countdown, following).joinToString("\n"),
+                bigText = listOfNotNull(dayLine, following).joinToString("\n"),
                 countdownTargetMillis = state.next.start.toEpochMillis(),
             )
         }
@@ -192,13 +226,6 @@ class ScheduleNotifier(private val context: Context) {
         if (!settings.showRoom || lesson.room.isBlank()) return countdown
         val room = context.getString(R.string.room_prefix, lesson.room)
         return context.getString(R.string.details_with_room, countdown, room)
-    }
-
-    private fun detailsLine(lesson: Lesson, settings: AppSettings): String {
-        val range = DateTimeText.timeRange(lesson, context)
-        if (!settings.showRoom || lesson.room.isBlank()) return range
-        val room = context.getString(R.string.room_prefix, lesson.room)
-        return context.getString(R.string.details_with_room, range, room)
     }
 
     private fun followingLine(

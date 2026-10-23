@@ -5,6 +5,7 @@ import android.app.Service
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
@@ -38,6 +39,10 @@ class ScheduleForegroundService : Service() {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private lateinit var container: AppContainer
 
+    /** Последнее состояние нужно, чтобы перерисовать уведомление при смене темы. */
+    @Volatile
+    private var lastTick: Tick? = null
+
     override fun onCreate() {
         super.onCreate()
         container = (application as ScheduleApplication).container
@@ -51,30 +56,8 @@ class ScheduleForegroundService : Service() {
                 minuteTicker(),
             ) { lessons, settings, now -> Tick(lessons, settings, now) }
                 .collect { tick ->
-                    if (!tick.settings.showingOnLockScreen) {
-                        stopSelf()
-                        return@collect
-                    }
-                    val state = container.resolver.resolve(
-                        now = tick.now,
-                        lessons = tick.lessons,
-                        anchorDate = tick.settings.anchorDate,
-                        anchorIsOdd = tick.settings.anchorIsOdd,
-                    )
-                    // На Android 13+ без разрешения уведомление не показывается,
-                    // но служба продолжает работать и обновится после выдачи разрешения.
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-                        ContextCompat.checkSelfPermission(
-                            this@ScheduleForegroundService,
-                            Manifest.permission.POST_NOTIFICATIONS,
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        return@collect
-                    }
-                    NotificationManagerCompat.from(this@ScheduleForegroundService).notify(
-                        ScheduleNotifier.NOTIFICATION_ID,
-                        container.notifier.build(state, tick.settings, tick.now),
-                    )
+                    lastTick = tick
+                    post(tick)
                 }
         }
     }
@@ -82,6 +65,42 @@ class ScheduleForegroundService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_STICKY
 
     override fun onBind(intent: Intent?): IBinder? = null
+
+    /**
+     * При смене системной темы цвета текста в уведомлении нужно пересчитать
+     * сразу, не дожидаясь следующего тика.
+     */
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        lastTick?.let(::post)
+    }
+
+    private fun post(tick: Tick) {
+        if (!tick.settings.showingOnLockScreen) {
+            stopSelf()
+            return
+        }
+        val state = container.resolver.resolve(
+            now = tick.now,
+            lessons = tick.lessons,
+            anchorDate = tick.settings.anchorDate,
+            anchorIsOdd = tick.settings.anchorIsOdd,
+        )
+        // На Android 13+ без разрешения уведомление не показывается,
+        // но служба продолжает работать и обновится после выдачи разрешения.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS,
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        NotificationManagerCompat.from(this).notify(
+            ScheduleNotifier.NOTIFICATION_ID,
+            container.notifier.build(state, tick.settings, tick.now),
+        )
+    }
 
     override fun onDestroy() {
         scope.cancel()
