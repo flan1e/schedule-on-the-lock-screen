@@ -31,7 +31,7 @@
     <!-- Notification -->
     <string name="notification_channel_name">Schedule on lock screen</string>
     <string name="notification_channel_description">Current or next class and countdown</string>
-    <string name="notification_preparing">Updating scheduleвЂ¦</string>
+    <string name="notification_preparing">Updating schedule…</string>
     <string name="notification_lesson_ongoing">In class</string>
     <string name="notification_lesson_next">Next class</string>
     <string name="notification_today_finished">Classes are over for today</string>
@@ -46,10 +46,10 @@
     <string name="notification_next_after">Then: %1$s</string>
 
     <!-- Formatting -->
-    <string name="time_range">%1$s вЂ“ %2$s</string>
-    <string name="time_range_next_day">%1$s вЂ“ %2$s (+1)</string>
+    <string name="time_range">%1$s – %2$s</string>
+    <string name="time_range_next_day">%1$s – %2$s (+1)</string>
     <string name="room_prefix">room %1$s</string>
-    <string name="details_with_room">%1$s В· %2$s</string>
+    <string name="details_with_room">%1$s · %2$s</string>
     <string name="duration_less_than_minute">less than a minute</string>
     <string name="duration_minutes">%1$d min</string>
     <string name="duration_hours_minutes">%1$d h %2$02d min</string>
@@ -71,7 +71,7 @@
     <string name="editor_error_title_required">Enter a title</string>
     <string name="editor_error_time_equal">Start and end are equal</string>
     <string name="editor_delete_title">Delete class?</string>
-    <string name="editor_delete_message">вЂњ%1$sвЂќ will be removed from the schedule.</string>
+    <string name="editor_delete_message">“%1$s” will be removed from the schedule.</string>
     <string name="editor_time_pick_start">Start time</string>
     <string name="editor_time_pick_end">End time</string>
 
@@ -95,7 +95,7 @@
     <string name="settings_theme_system">System</string>
     <string name="settings_language">Language</string>
     <string name="settings_language_system">System</string>
-    <string name="settings_language_russian">Р СѓСЃСЃРєРёР№</string>
+    <string name="settings_language_russian">Русский</string>
     <string name="settings_language_english">English</string>
     <string name="settings_language_hint">On Android 13+ the language changes for the whole app.</string>
     <string name="settings_section_weeks">Academic weeks</string>
@@ -103,7 +103,7 @@
     <string name="settings_current_week_odd">Odd</string>
     <string name="settings_current_week_even">Even</string>
     <string name="settings_anchor_week">Reference week</string>
-    <string name="settings_anchor_week_summary">%1$s В· %2$s</string>
+    <string name="settings_anchor_week_summary">%1$s · %2$s</string>
     <string name="settings_anchor_parity">Reference week parity</string>
     <string name="settings_override">Override</string>
     <string name="settings_override_title">Current week parity</string>

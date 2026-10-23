@@ -63,7 +63,7 @@ import com.flan1e.schedule.util.DateTimeText
 import com.flan1e.schedule.util.toUtcMillis
 import java.time.LocalDate
 
-/** РЎРѕР±С‹С‚РёСЏ СЌРєСЂР°РЅР° РЅР°СЃС‚СЂРѕРµРє: СЌРєСЂР°РЅ РЅРµ Р·РЅР°РµС‚ Рѕ ViewModel Рё СЂРµРїРѕР·РёС‚РѕСЂРёСЏС…. */
+/** События экрана настроек: экран не знает о ViewModel и репозиториях. */
 sealed interface SettingsEvent {
     data class EnabledChanged(val value: Boolean) : SettingsEvent
     data class LockScreenVisibilityChanged(val value: Boolean) : SettingsEvent

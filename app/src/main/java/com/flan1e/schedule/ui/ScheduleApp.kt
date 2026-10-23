@@ -71,7 +71,7 @@ private fun ScheduleRoute(
         permissionGranted = NotificationPermission.isGranted(context)
     }
 
-    // РћРґРёРЅ СЂР°Р· Р·Р° СѓСЃС‚Р°РЅРѕРІРєСѓ РїСЂРѕСЃРёРј СЂР°Р·СЂРµС€РµРЅРёРµ РЅР° СѓРІРµРґРѕРјР»РµРЅРёСЏ (Android 13+).
+    // Один раз за установку просим разрешение на уведомления (Android 13+).
     LaunchedEffect(
         state.loaded,
         state.settings?.notificationPermissionRequested,
