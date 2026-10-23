@@ -12,6 +12,7 @@ import com.flan1e.schedule.domain.logic.WeekParityCalculator
 import com.flan1e.schedule.domain.model.AppLanguage
 import com.flan1e.schedule.domain.model.AppSettings
 import com.flan1e.schedule.domain.model.AppTheme
+import com.flan1e.schedule.domain.model.BellSchedule
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -37,6 +38,25 @@ class SettingsRepository(
         .map { it.toSettings() }
 
     suspend fun snapshot(): AppSettings = settings.first()
+
+    /** Сетка звонков живёт рядом с настройками: это пользовательский пресет. */
+    val bellSchedule: Flow<BellSchedule> = dataStore.data
+        .catch { error ->
+            if (error is IOException) emit(emptyPreferences()) else throw error
+        }
+        .map { prefs -> BellSchedule.decode(prefs[Keys.BELL_SCHEDULE]) }
+
+    suspend fun snapshotBellSchedule(): BellSchedule = bellSchedule.first()
+
+    suspend fun setBellSchedule(schedule: BellSchedule) {
+        dataStore.edit { prefs ->
+            if (schedule.isEmpty) {
+                prefs.remove(Keys.BELL_SCHEDULE)
+            } else {
+                prefs[Keys.BELL_SCHEDULE] = schedule.encode()
+            }
+        }
+    }
 
     suspend fun setEnabled(value: Boolean) {
         dataStore.edit { it[Keys.ENABLED] = value }
@@ -137,6 +157,7 @@ class SettingsRepository(
         val LANGUAGE = stringPreferencesKey("language")
         val ANCHOR_EPOCH_DAY = longPreferencesKey("anchor_epoch_day")
         val ANCHOR_IS_ODD = booleanPreferencesKey("anchor_is_odd")
+        val BELL_SCHEDULE = stringPreferencesKey("bell_schedule")
         val PERMISSION_REQUESTED = booleanPreferencesKey("notification_permission_requested")
     }
 }

@@ -68,6 +68,8 @@
     <string name="editor_field_end">Ends</string>
     <string name="editor_field_day">Day of week</string>
     <string name="editor_field_parity">Repeats</string>
+    <string name="editor_field_bell">Class times</string>
+    <string name="editor_bell_period">%1$d · %2$s–%3$s</string>
     <string name="editor_duration">Duration: %1$s</string>
     <string name="editor_error_title_required">Enter a title</string>
     <string name="editor_error_time_equal">Start and end are equal</string>
@@ -118,6 +120,35 @@
     <string name="settings_notifications_denied">Blocked</string>
     <string name="settings_open_system_settings">Open settings</string>
     <string name="settings_section_about">About</string>
+    <string name="settings_section_schedule">Schedule</string>
+    <string name="settings_bell_subtitle">Period times for quick selection in the editor</string>
+    <string name="settings_bell_open">Set up</string>
+
+    <!-- Class times -->
+    <string name="bell_screen_title">Class times</string>
+    <string name="bell_empty">The grid is empty. Add periods to pick their time in the editor with one tap.</string>
+    <string name="bell_add">Add period</string>
+    <string name="bell_standard">Standard grid</string>
+    <string name="bell_clear">Clear</string>
+    <string name="bell_clear_title">Clear the grid?</string>
+    <string name="bell_clear_message">The editor will stop suggesting period times. The lessons themselves stay.</string>
+    <string name="bell_period_title">Period %1$d</string>
+    <string name="bell_period_time">%1$s – %2$s · %3$s</string>
+    <string name="bell_error_time">End must be later than start</string>
+
+    <!-- Backup -->
+    <string name="settings_section_backup">Backup</string>
+    <string name="settings_backup_hint">The schedule and the anchor week are saved to a JSON file.</string>
+    <string name="settings_backup_export">Export to file</string>
+    <string name="settings_backup_import">Import from file</string>
+    <string name="backup_import_title">Replace the schedule?</string>
+    <string name="backup_import_message">The file contains %1$d lessons. The current schedule will be replaced and the anchor week updated from the file.</string>
+    <string name="backup_import_confirm">Import</string>
+    <string name="backup_import_success">Imported lessons: %1$d</string>
+    <string name="backup_import_error">Could not read the schedule file</string>
+    <string name="backup_export_success">File saved</string>
+    <string name="backup_export_error">Could not save the file</string>
+    <string name="backup_file_name">schedule-backup.json</string>
     <string name="settings_version">Version %1$s</string>
     <string name="settings_lock_screen_hint">The notification appears on the lock screen unless its content is hidden in the system settings.</string>
 

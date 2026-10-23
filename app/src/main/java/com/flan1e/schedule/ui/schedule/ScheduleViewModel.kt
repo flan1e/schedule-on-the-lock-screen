@@ -11,6 +11,7 @@ import com.flan1e.schedule.di.AppContainer
 import com.flan1e.schedule.domain.logic.ScheduleResolver
 import com.flan1e.schedule.domain.logic.WeekParityCalculator
 import com.flan1e.schedule.domain.model.AppSettings
+import com.flan1e.schedule.domain.model.BellSchedule
 import com.flan1e.schedule.domain.model.Lesson
 import com.flan1e.schedule.domain.model.ScheduleState
 import kotlinx.coroutines.delay
@@ -42,9 +43,10 @@ class ScheduleViewModel(
     val uiState: StateFlow<ScheduleUiState> = combine(
         scheduleRepository.observeLessons(),
         settingsRepository.settings,
+        settingsRepository.bellSchedule,
         ticker,
-    ) { lessons, settings, now ->
-        buildState(lessons, settings, now)
+    ) { lessons, settings, bellSchedule, now ->
+        buildState(lessons, settings, bellSchedule, now)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),
@@ -66,6 +68,7 @@ class ScheduleViewModel(
     private fun buildState(
         lessons: List<Lesson>,
         settings: AppSettings,
+        bellSchedule: BellSchedule,
         now: LocalDateTime,
     ): ScheduleUiState {
         val today = now.toLocalDate()
@@ -86,6 +89,7 @@ class ScheduleViewModel(
                 anchorIsOdd = settings.anchorIsOdd,
             ),
             settings = settings,
+            bellSchedule = bellSchedule,
         )
     }
 
@@ -117,4 +121,5 @@ data class ScheduleUiState(
     val weekIsOdd: Boolean = true,
     val scheduleState: ScheduleState? = null,
     val settings: AppSettings? = null,
+    val bellSchedule: BellSchedule = BellSchedule.Empty,
 )

@@ -150,6 +150,7 @@ fun ScheduleScreen(
             initial = request.lesson,
             initialDay = request.day,
             defaultStart = request.defaultStart,
+            bellSchedule = state.bellSchedule,
             onDismiss = { editorRequest = null },
             onSave = { lesson ->
                 onSaveLesson(lesson)

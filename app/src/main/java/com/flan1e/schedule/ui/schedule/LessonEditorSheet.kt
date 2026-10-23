@@ -1,6 +1,5 @@
 package com.flan1e.schedule.ui.schedule
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
@@ -26,7 +26,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -45,7 +44,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.flan1e.schedule.R
 import com.flan1e.schedule.domain.model.Lesson
+import com.flan1e.schedule.domain.model.BellSchedule
 import com.flan1e.schedule.domain.model.WeekParity
+import com.flan1e.schedule.ui.components.TimeFieldButton
 import com.flan1e.schedule.ui.components.TimePickerDialog
 import com.flan1e.schedule.util.DateTimeText
 import com.flan1e.schedule.util.DurationText
@@ -63,6 +64,7 @@ fun LessonEditorSheet(
     initial: Lesson?,
     initialDay: DayOfWeek,
     defaultStart: LocalTime,
+    bellSchedule: BellSchedule,
     onDismiss: () -> Unit,
     onSave: (Lesson) -> Unit,
     onDelete: (Lesson) -> Unit,
@@ -179,6 +181,44 @@ fun LessonEditorSheet(
                                 Text(DateTimeText.dayName(value, locale, java.time.format.TextStyle.SHORT))
                             },
                         )
+                    }
+                }
+            }
+
+            if (!bellSchedule.isEmpty) {
+                Column {
+                    Text(
+                        text = stringResource(R.string.editor_field_bell),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        itemsIndexed(bellSchedule.periods) { index, period ->
+                            val selected = bellSchedule.indexOf(
+                                minutesToTime(startMinutes),
+                                minutesToTime(endMinutes),
+                            ) == index
+                            FilterChip(
+                                selected = selected,
+                                onClick = {
+                                    startMinutes = period.startMinute
+                                    endMinutes = period.endMinute
+                                    endEdited = true
+                                    timeError = false
+                                },
+                                label = {
+                                    Text(
+                                        stringResource(
+                                            R.string.editor_bell_period,
+                                            index + 1,
+                                            DateTimeText.time(minutesToTime(period.startMinute)),
+                                            DateTimeText.time(minutesToTime(period.endMinute)),
+                                        ),
+                                    )
+                                },
+                            )
+                        }
                     }
                 }
             }
@@ -327,34 +367,6 @@ fun LessonEditorSheet(
     }
 }
 
-@Composable
-private fun TimeFieldButton(
-    label: String,
-    value: String,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-) {
-    Surface(
-        onClick = onClick,
-        modifier = modifier,
-        shape = MaterialTheme.shapes.medium,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-        color = MaterialTheme.colorScheme.surface,
-    ) {
-        Column(Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Spacer(Modifier.height(2.dp))
-            Text(
-                text = value,
-                style = MaterialTheme.typography.titleLarge,
-            )
-        }
-    }
-}
 
 private enum class TimeField {
     START,

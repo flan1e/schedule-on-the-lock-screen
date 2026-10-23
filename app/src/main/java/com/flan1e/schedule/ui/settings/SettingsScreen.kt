@@ -2,6 +2,9 @@ package com.flan1e.schedule.ui.settings
 
 import android.content.Intent
 import android.provider.Settings
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,6 +50,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,11 +60,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.flan1e.schedule.R
+import com.flan1e.schedule.data.backup.BackupCodec
+import com.flan1e.schedule.data.backup.ScheduleBackup
 import com.flan1e.schedule.domain.model.AppLanguage
 import com.flan1e.schedule.domain.model.AppSettings
 import com.flan1e.schedule.domain.model.AppTheme
 import com.flan1e.schedule.util.DateTimeText
 import com.flan1e.schedule.util.toUtcMillis
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 /** События экрана настроек: экран не знает о ViewModel и репозиториях. */
@@ -86,12 +93,60 @@ fun SettingsScreen(
     permissionGranted: Boolean,
     versionName: String,
     onBack: () -> Unit,
+    onOpenBellSchedule: () -> Unit,
     onEvent: (SettingsEvent) -> Unit,
+    onExportJson: suspend () -> String,
+    onApplyBackup: (ScheduleBackup, (Int) -> Unit) -> Unit,
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val locale = DateTimeText.locale(LocalConfiguration.current)
     var showDatePicker by remember { mutableStateOf(false) }
     var showOverrideDialog by remember { mutableStateOf(false) }
+    var pendingBackup by remember { mutableStateOf<ScheduleBackup?>(null) }
+
+    val backupFileName = stringResource(R.string.backup_file_name)
+    val exportSuccessMessage = stringResource(R.string.backup_export_success)
+    val exportErrorMessage = stringResource(R.string.backup_export_error)
+    val importErrorMessage = stringResource(R.string.backup_import_error)
+    val importSuccessTemplate = stringResource(R.string.backup_import_success)
+
+    // Экспорт через системный «Сохранить как»: без разрешений на хранилище.
+    val createBackupLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("application/json"),
+    ) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        scope.launch {
+            val saved = runCatching {
+                val json = onExportJson()
+                context.contentResolver.openOutputStream(uri)?.use { stream ->
+                    stream.write(json.toByteArray(Charsets.UTF_8))
+                } ?: error("Нет потока для записи")
+            }.isSuccess
+            Toast.makeText(
+                context,
+                if (saved) exportSuccessMessage else exportErrorMessage,
+                Toast.LENGTH_SHORT,
+            ).show()
+        }
+    }
+
+    val openBackupLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
+    ) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        val text = runCatching {
+            context.contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() }
+        }.getOrNull()
+        val backup = text?.let { raw ->
+            runCatching { BackupCodec.decode(raw) }.getOrNull()
+        }
+        if (backup == null) {
+            Toast.makeText(context, importErrorMessage, Toast.LENGTH_LONG).show()
+        } else {
+            pendingBackup = backup
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -316,6 +371,29 @@ fun SettingsScreen(
                 }
             }
 
+            SectionTitle(stringResource(R.string.settings_section_schedule))
+            SettingsCard {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            text = stringResource(R.string.bell_screen_title),
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                        Text(
+                            text = stringResource(R.string.settings_bell_subtitle),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    TextButton(onClick = onOpenBellSchedule) {
+                        Text(stringResource(R.string.settings_bell_open))
+                    }
+                }
+            }
+
             SectionTitle(stringResource(R.string.settings_section_permissions))
             SettingsCard {
                 Row(
@@ -351,6 +429,26 @@ fun SettingsScreen(
                         },
                     ) {
                         Text(stringResource(R.string.settings_open_system_settings))
+                    }
+                }
+            }
+
+            SectionTitle(stringResource(R.string.settings_section_backup))
+            SettingsCard {
+                Column(Modifier.padding(16.dp)) {
+                    Text(
+                        text = stringResource(R.string.settings_backup_hint),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        TextButton(onClick = { createBackupLauncher.launch(backupFileName) }) {
+                            Text(stringResource(R.string.settings_backup_export))
+                        }
+                        TextButton(onClick = { openBackupLauncher.launch(arrayOf("*/*")) }) {
+                            Text(stringResource(R.string.settings_backup_import))
+                        }
                     }
                 }
             }
@@ -431,6 +529,43 @@ fun SettingsScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showOverrideDialog = false }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            },
+        )
+    }
+
+    val backupToImport = pendingBackup
+    if (backupToImport != null) {
+        AlertDialog(
+            onDismissRequest = { pendingBackup = null },
+            title = { Text(stringResource(R.string.backup_import_title)) },
+            text = {
+                Text(
+                    stringResource(
+                        R.string.backup_import_message,
+                        backupToImport.lessons.size,
+                    ),
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        pendingBackup = null
+                        onApplyBackup(backupToImport) { count ->
+                            Toast.makeText(
+                                context,
+                                String.format(importSuccessTemplate, count),
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                        }
+                    },
+                ) {
+                    Text(stringResource(R.string.backup_import_confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { pendingBackup = null }) {
                     Text(stringResource(R.string.action_cancel))
                 }
             },

@@ -68,6 +68,8 @@
     <string name="editor_field_end">Окончание</string>
     <string name="editor_field_day">День недели</string>
     <string name="editor_field_parity">Повторение</string>
+    <string name="editor_field_bell">Сетка звонков</string>
+    <string name="editor_bell_period">%1$d · %2$s–%3$s</string>
     <string name="editor_duration">Длительность: %1$s</string>
     <string name="editor_error_title_required">Введите название</string>
     <string name="editor_error_time_equal">Начало и окончание совпадают</string>
@@ -118,6 +120,35 @@
     <string name="settings_notifications_denied">Запрещены</string>
     <string name="settings_open_system_settings">Открыть настройки</string>
     <string name="settings_section_about">О приложении</string>
+    <string name="settings_section_schedule">Расписание</string>
+    <string name="settings_bell_subtitle">Время пар для быстрого выбора в редакторе</string>
+    <string name="settings_bell_open">Настроить</string>
+
+    <!-- Сетка звонков -->
+    <string name="bell_screen_title">Сетка звонков</string>
+    <string name="bell_empty">Сетка пуста. Добавьте пары — их время можно будет выбрать в редакторе одним нажатием.</string>
+    <string name="bell_add">Добавить пару</string>
+    <string name="bell_standard">Стандартная сетка</string>
+    <string name="bell_clear">Очистить</string>
+    <string name="bell_clear_title">Очистить сетку?</string>
+    <string name="bell_clear_message">Время пар перестанет подставляться в редакторе. Сами пары расписания останутся.</string>
+    <string name="bell_period_title">Пара %1$d</string>
+    <string name="bell_period_time">%1$s – %2$s · %3$s</string>
+    <string name="bell_error_time">Конец должен быть позже начала</string>
+
+    <!-- Резервная копия -->
+    <string name="settings_section_backup">Резервная копия</string>
+    <string name="settings_backup_hint">Расписание и опорная неделя сохраняются в JSON-файл.</string>
+    <string name="settings_backup_export">Сохранить в файл</string>
+    <string name="settings_backup_import">Загрузить из файла</string>
+    <string name="backup_import_title">Заменить расписание?</string>
+    <string name="backup_import_message">В файле пар: %1$d. Текущее расписание будет заменено, опорная неделя обновится из файла.</string>
+    <string name="backup_import_confirm">Импортировать</string>
+    <string name="backup_import_success">Импортировано пар: %1$d</string>
+    <string name="backup_import_error">Не удалось прочитать файл расписания</string>
+    <string name="backup_export_success">Файл сохранён</string>
+    <string name="backup_export_error">Не удалось сохранить файл</string>
+    <string name="backup_file_name">schedule-backup.json</string>
     <string name="settings_version">Версия %1$s</string>
     <string name="settings_lock_screen_hint">Уведомление появится на экране блокировки, если в системных настройках не скрыто его содержимое.</string>
 

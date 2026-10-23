@@ -14,6 +14,9 @@ interface ScheduleRepository {
     suspend fun getLessons(): List<Lesson>
     suspend fun saveLesson(lesson: Lesson): Long
     suspend fun deleteLesson(id: Long)
+
+    /** Заменяет всё расписание одним действием — для импорта резервной копии. */
+    suspend fun replaceAll(lessons: List<Lesson>)
 }
 
 class RoomScheduleRepository(
@@ -36,6 +39,10 @@ class RoomScheduleRepository(
 
     override suspend fun deleteLesson(id: Long) {
         dao.deleteById(id)
+    }
+
+    override suspend fun replaceAll(lessons: List<Lesson>) {
+        dao.replaceAll(lessons.map { it.copy(id = 0L).toEntity() })
     }
 }
 

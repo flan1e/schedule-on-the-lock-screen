@@ -25,9 +25,12 @@ import com.flan1e.schedule.ui.schedule.ScheduleScreen
 import com.flan1e.schedule.ui.schedule.ScheduleViewModel
 import com.flan1e.schedule.ui.settings.SettingsScreen
 import com.flan1e.schedule.ui.settings.SettingsViewModel
+import com.flan1e.schedule.ui.settings.BellScheduleScreen
+import com.flan1e.schedule.ui.settings.BellScheduleViewModel
 
 private const val ROUTE_SCHEDULE = "schedule"
 private const val ROUTE_SETTINGS = "settings"
+private const val ROUTE_BELL = "bell"
 
 @Composable
 fun ScheduleApp(container: AppContainer) {
@@ -45,6 +48,13 @@ fun ScheduleApp(container: AppContainer) {
         }
         composable(ROUTE_SETTINGS) {
             SettingsRoute(
+                container = container,
+                onBack = { navController.popBackStack() },
+                onOpenBellSchedule = { navController.navigate(ROUTE_BELL) },
+            )
+        }
+        composable(ROUTE_BELL) {
+            BellScheduleRoute(
                 container = container,
                 onBack = { navController.popBackStack() },
             )
@@ -105,6 +115,7 @@ private fun ScheduleRoute(
 private fun SettingsRoute(
     container: AppContainer,
     onBack: () -> Unit,
+    onOpenBellSchedule: () -> Unit,
 ) {
     val viewModel: SettingsViewModel = viewModel(factory = SettingsViewModel.factory(container))
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -129,7 +140,30 @@ private fun SettingsRoute(
         permissionGranted = permissionGranted,
         versionName = versionName,
         onBack = onBack,
+        onOpenBellSchedule = onOpenBellSchedule,
         onEvent = viewModel::handle,
+        onExportJson = viewModel::exportJson,
+        onApplyBackup = viewModel::applyBackup,
+    )
+}
+
+@Composable
+private fun BellScheduleRoute(
+    container: AppContainer,
+    onBack: () -> Unit,
+) {
+    val viewModel: BellScheduleViewModel =
+        viewModel(factory = BellScheduleViewModel.factory(container))
+    val schedule by viewModel.schedule.collectAsStateWithLifecycle()
+
+    BellScheduleScreen(
+        schedule = schedule,
+        onBack = onBack,
+        onAdd = viewModel::addPeriod,
+        onUpdate = viewModel::updatePeriod,
+        onRemove = viewModel::removePeriod,
+        onUseStandard = viewModel::useStandard,
+        onClear = viewModel::clear,
     )
 }
 

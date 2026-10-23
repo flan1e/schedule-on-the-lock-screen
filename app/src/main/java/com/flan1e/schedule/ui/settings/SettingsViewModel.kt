@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.flan1e.schedule.data.backup.BackupCodec
+import com.flan1e.schedule.data.backup.ScheduleBackup
+import com.flan1e.schedule.data.repository.ScheduleRepository
 import com.flan1e.schedule.data.repository.SettingsRepository
 import com.flan1e.schedule.di.AppContainer
 import com.flan1e.schedule.domain.logic.WeekParityCalculator
@@ -22,6 +25,7 @@ import java.time.LocalDate
 
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
+    private val scheduleRepository: ScheduleRepository,
     private val serviceController: ScheduleServiceController,
 ) : ViewModel() {
 
@@ -73,6 +77,32 @@ class SettingsViewModel(
 
     fun onResetAnchor() = update { resetAnchorWeek() }
 
+    /** JSON для файла резервной копии: пары и опорная неделя. */
+    suspend fun exportJson(): String {
+        val settings = settingsRepository.snapshot()
+        return BackupCodec.encode(
+            ScheduleBackup(
+                anchorDate = settings.anchorDate,
+                anchorIsOdd = settings.anchorIsOdd,
+                lessons = scheduleRepository.getLessons(),
+            ),
+        )
+    }
+
+    /**
+     * Применяет уже разобранную копию: пары одной транзакцией Room,
+     * затем опорная неделя. После этого сразу обновляем службу уведомления.
+     */
+    fun applyBackup(backup: ScheduleBackup, onApplied: (Int) -> Unit) {
+        viewModelScope.launch {
+            scheduleRepository.replaceAll(backup.lessons)
+            settingsRepository.setAnchorDate(backup.anchorDate)
+            settingsRepository.setAnchorOdd(backup.anchorIsOdd)
+            serviceController.apply(settingsRepository.snapshot())
+            onApplied(backup.lessons.size)
+        }
+    }
+
     /** Единая точка входа для событий экрана настроек. */
     fun handle(event: SettingsEvent) {
         when (event) {
@@ -107,6 +137,7 @@ class SettingsViewModel(
             initializer {
                 SettingsViewModel(
                     settingsRepository = container.settingsRepository,
+                    scheduleRepository = container.scheduleRepository,
                     serviceController = container.serviceController,
                 )
             }
