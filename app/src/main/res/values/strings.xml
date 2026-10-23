@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Р Р°СЃРїРёСЃР°РЅРёРµ</string>
+
+    <!-- РћР±С‰РёРµ РґРµР№СЃС‚РІРёСЏ -->
+    <string name="action_settings">РќР°СЃС‚СЂРѕР№РєРё</string>
+    <string name="action_add_lesson">Р”РѕР±Р°РІРёС‚СЊ РїР°СЂСѓ</string>
+    <string name="action_save">РЎРѕС…СЂР°РЅРёС‚СЊ</string>
+    <string name="action_cancel">РћС‚РјРµРЅР°</string>
+    <string name="action_delete">РЈРґР°Р»РёС‚СЊ</string>
+    <string name="action_close">Р—Р°РєСЂС‹С‚СЊ</string>
+
+    <!-- Р­РєСЂР°РЅ СЂР°СЃРїРёСЃР°РЅРёСЏ -->
+    <string name="schedule_title">Р Р°СЃРїРёСЃР°РЅРёРµ</string>
+    <string name="schedule_week_odd">РЎРµР№С‡Р°СЃ РЅРµС‡С‘С‚РЅР°СЏ РЅРµРґРµР»СЏ</string>
+    <string name="schedule_week_even">РЎРµР№С‡Р°СЃ С‡С‘С‚РЅР°СЏ РЅРµРґРµР»СЏ</string>
+    <string name="schedule_now_in_progress">РРґС‘С‚: %1$s, РґРѕ %2$s</string>
+    <string name="schedule_next_today">РЎР»РµРґСѓСЋС‰Р°СЏ: %1$s РІ %2$s</string>
+    <string name="schedule_finished_today">РќР° СЃРµРіРѕРґРЅСЏ РїР°СЂ Р±РѕР»СЊС€Рµ РЅРµС‚</string>
+    <string name="schedule_no_lessons_today">РЎРµРіРѕРґРЅСЏ РїР°СЂ РЅРµС‚</string>
+    <string name="schedule_empty">Р Р°СЃРїРёСЃР°РЅРёРµ РїСѓСЃС‚Рѕ. Р”РѕР±Р°РІСЊС‚Рµ РїРµСЂРІСѓСЋ РїР°СЂСѓ.</string>
+    <string name="schedule_day_empty">РќРµС‚ РїР°СЂ</string>
+    <string name="schedule_add_to_day">Р”РѕР±Р°РІРёС‚СЊ РїР°СЂСѓ РІ СЌС‚РѕС‚ РґРµРЅСЊ</string>
+    <string name="schedule_room_prefix">РєР°Р±. %1$s</string>
+    <string name="schedule_time_next_day">%1$s (+1)</string>
+    <string name="schedule_today_badge">РЎРµРіРѕРґРЅСЏ</string>
+    <string name="schedule_parity_every_short">Р’СЃРµ</string>
+    <string name="schedule_parity_odd_short">РќРµС‡С‘С‚.</string>
+    <string name="schedule_parity_even_short">Р§С‘С‚.</string>
+
+    <!-- РЈРІРµРґРѕРјР»РµРЅРёРµ -->
+    <string name="notification_channel_name">Р Р°СЃРїРёСЃР°РЅРёРµ РЅР° СЌРєСЂР°РЅРµ Р±Р»РѕРєРёСЂРѕРІРєРё</string>
+    <string name="notification_channel_description">РўРµРєСѓС‰Р°СЏ РёР»Рё СЃР»РµРґСѓСЋС‰Р°СЏ РїР°СЂР° Рё РѕР±СЂР°С‚РЅС‹Р№ РѕС‚СЃС‡С‘С‚</string>
+    <string name="notification_preparing">РћР±РЅРѕРІР»РµРЅРёРµ СЂР°СЃРїРёСЃР°РЅРёСЏвЂ¦</string>
+    <string name="notification_lesson_ongoing">РРґС‘С‚ РїР°СЂР°</string>
+    <string name="notification_lesson_next">РЎР»РµРґСѓСЋС‰Р°СЏ РїР°СЂР°</string>
+    <string name="notification_today_finished">РџР°СЂС‹ РЅР° СЃРµРіРѕРґРЅСЏ Р·Р°РєРѕРЅС‡РёР»РёСЃСЊ</string>
+    <string name="notification_today_empty">РЎРµРіРѕРґРЅСЏ РїР°СЂ РЅРµС‚</string>
+    <string name="notification_no_schedule">Р Р°СЃРїРёСЃР°РЅРёРµ РїСѓСЃС‚Рѕ</string>
+    <string name="notification_no_schedule_text">Р”РѕР±Р°РІСЊС‚Рµ РїР°СЂС‹ РІ РїСЂРёР»РѕР¶РµРЅРёРё</string>
+    <string name="notification_action_hide">РЎРєСЂС‹С‚СЊ</string>
+    <string name="notification_action_disable">РћС‚РєР»СЋС‡РёС‚СЊ</string>
+    <string name="notification_until_end">Р”Рѕ РєРѕРЅС†Р° %1$s</string>
+    <string name="notification_until_start">Р”Рѕ РЅР°С‡Р°Р»Р° %1$s</string>
+    <string name="notification_next">РЎР»РµРґСѓСЋС‰Р°СЏ: %1$s</string>
+    <string name="notification_next_after">Р—Р°С‚РµРј: %1$s</string>
+
+    <!-- Р¤РѕСЂРјР°С‚РёСЂРѕРІР°РЅРёРµ -->
+    <string name="time_range">%1$s вЂ“ %2$s</string>
+    <string name="time_range_next_day">%1$s вЂ“ %2$s (+1)</string>
+    <string name="room_prefix">РєР°Р±. %1$s</string>
+    <string name="details_with_room">%1$s В· %2$s</string>
+    <string name="duration_less_than_minute">РјРµРЅСЊС€Рµ РјРёРЅСѓС‚С‹</string>
+    <string name="duration_minutes">%1$d РјРёРЅ</string>
+    <string name="duration_hours_minutes">%1$d С‡ %2$02d РјРёРЅ</string>
+    <string name="duration_days_hours">%1$d Рґ %2$d С‡</string>
+    <string name="relative_today">СЃРµРіРѕРґРЅСЏ</string>
+    <string name="relative_tomorrow">Р·Р°РІС‚СЂР°</string>
+    <string name="relative_day_after_tomorrow">РїРѕСЃР»РµР·Р°РІС‚СЂР°</string>
+
+    <!-- Р РµРґР°РєС‚РѕСЂ РїР°СЂС‹ -->
+    <string name="editor_new_title">РќРѕРІР°СЏ РїР°СЂР°</string>
+    <string name="editor_edit_title">РР·РјРµРЅРёС‚СЊ РїР°СЂСѓ</string>
+    <string name="editor_field_title">РќР°Р·РІР°РЅРёРµ</string>
+    <string name="editor_field_room">РљР°Р±РёРЅРµС‚</string>
+    <string name="editor_field_start">РќР°С‡Р°Р»Рѕ</string>
+    <string name="editor_field_end">РћРєРѕРЅС‡Р°РЅРёРµ</string>
+    <string name="editor_field_day">Р”РµРЅСЊ РЅРµРґРµР»Рё</string>
+    <string name="editor_field_parity">РџРѕРІС‚РѕСЂРµРЅРёРµ</string>
+    <string name="editor_duration">Р”Р»РёС‚РµР»СЊРЅРѕСЃС‚СЊ: %1$s</string>
+    <string name="editor_error_title_required">Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ</string>
+    <string name="editor_error_time_equal">РќР°С‡Р°Р»Рѕ Рё РѕРєРѕРЅС‡Р°РЅРёРµ СЃРѕРІРїР°РґР°СЋС‚</string>
+    <string name="editor_delete_title">РЈРґР°Р»РёС‚СЊ РїР°СЂСѓ?</string>
+    <string name="editor_delete_message">РџР°СЂР° В«%1$sВ» Р±СѓРґРµС‚ СѓРґР°Р»РµРЅР°.</string>
+    <string name="editor_time_pick_start">Р’СЂРµРјСЏ РЅР°С‡Р°Р»Р°</string>
+    <string name="editor_time_pick_end">Р’СЂРµРјСЏ РѕРєРѕРЅС‡Р°РЅРёСЏ</string>
+
+    <!-- РќР°СЃС‚СЂРѕР№РєРё -->
+    <string name="settings_title">РќР°СЃС‚СЂРѕР№РєРё</string>
+    <string name="settings_section_main">РћСЃРЅРѕРІРЅРѕРµ</string>
+    <string name="settings_enabled">РџСЂРёР»РѕР¶РµРЅРёРµ РІРєР»СЋС‡РµРЅРѕ</string>
+    <string name="settings_enabled_summary">РџРѕРєР°Р·С‹РІР°С‚СЊ СЂР°СЃРїРёСЃР°РЅРёРµ РЅР° СЌРєСЂР°РЅРµ Р±Р»РѕРєРёСЂРѕРІРєРё</string>
+    <string name="settings_lock_screen">РџРѕРєР°Р·С‹РІР°С‚СЊ РЅР° СЌРєСЂР°РЅРµ Р±Р»РѕРєРёСЂРѕРІРєРё</string>
+    <string name="settings_lock_screen_summary">РЎРєСЂС‹С‚СЊ СѓРІРµРґРѕРјР»РµРЅРёРµ, РЅРµ РІС‹РєР»СЋС‡Р°СЏ РїСЂРёР»РѕР¶РµРЅРёРµ</string>
+    <string name="settings_section_notification">РЈРІРµРґРѕРјР»РµРЅРёРµ</string>
+    <string name="settings_show_title">РќР°Р·РІР°РЅРёРµ РїР°СЂС‹</string>
+    <string name="settings_show_room">РљР°Р±РёРЅРµС‚</string>
+    <string name="settings_show_next">РЎР»РµРґСѓСЋС‰Р°СЏ РїР°СЂР°</string>
+    <string name="settings_compact">РљРѕРјРїР°РєС‚РЅС‹Р№ РІРёРґ</string>
+    <string name="settings_compact_summary">Р‘РµР· СЂР°Р·РІС‘СЂРЅСѓС‚РѕРіРѕ С‚РµРєСЃС‚Р° РІ С€С‚РѕСЂРєРµ</string>
+    <string name="settings_section_appearance">РћС„РѕСЂРјР»РµРЅРёРµ</string>
+    <string name="settings_theme">РўРµРјР°</string>
+    <string name="settings_theme_light">РЎРІРµС‚Р»Р°СЏ</string>
+    <string name="settings_theme_dark">РўС‘РјРЅР°СЏ</string>
+    <string name="settings_theme_system">РЎРёСЃС‚РµРјРЅР°СЏ</string>
+    <string name="settings_language">РЇР·С‹Рє</string>
+    <string name="settings_language_system">РЎРёСЃС‚РµРјРЅС‹Р№</string>
+    <string name="settings_language_russian">Р СѓСЃСЃРєРёР№</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_hint">РќР° Android 13+ СЏР·С‹Рє РјРµРЅСЏРµС‚СЃСЏ РґР»СЏ РїСЂРёР»РѕР¶РµРЅРёСЏ С†РµР»РёРєРѕРј.</string>
+    <string name="settings_section_weeks">РЈС‡РµР±РЅС‹Рµ РЅРµРґРµР»Рё</string>
+    <string name="settings_current_week">РўРµРєСѓС‰Р°СЏ РЅРµРґРµР»СЏ</string>
+    <string name="settings_current_week_odd">РќРµС‡С‘С‚РЅР°СЏ</string>
+    <string name="settings_current_week_even">Р§С‘С‚РЅР°СЏ</string>
+    <string name="settings_anchor_week">РћРїРѕСЂРЅР°СЏ РЅРµРґРµР»СЏ</string>
+    <string name="settings_anchor_week_summary">%1$s В· %2$s</string>
+    <string name="settings_anchor_parity">Р§С‘С‚РЅРѕСЃС‚СЊ РѕРїРѕСЂРЅРѕР№ РЅРµРґРµР»Рё</string>
+    <string name="settings_override">РџРµСЂРµРѕРїСЂРµРґРµР»РёС‚СЊ</string>
+    <string name="settings_override_title">Р§С‘С‚РЅРѕСЃС‚СЊ С‚РµРєСѓС‰РµР№ РЅРµРґРµР»Рё</string>
+    <string name="settings_override_message">РћРїРѕСЂРЅР°СЏ РЅРµРґРµР»СЏ СЃРґРІРёРЅРµС‚СЃСЏ РЅР° СЃРѕСЃРµРґРЅСЋСЋ, Рё СЂР°СЃС‡С‘С‚ СЃРЅРѕРІР° СЃС‚Р°РЅРµС‚ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРёРј.</string>
+    <string name="settings_override_odd">РЎРґРµР»Р°С‚СЊ РЅРµС‡С‘С‚РЅРѕР№</string>
+    <string name="settings_override_even">РЎРґРµР»Р°С‚СЊ С‡С‘С‚РЅРѕР№</string>
+    <string name="settings_reset_anchor">РЎР±СЂРѕСЃРёС‚СЊ Рє 1 СЃРµРЅС‚СЏР±СЂСЏ</string>
+    <string name="settings_section_permissions">Р Р°Р·СЂРµС€РµРЅРёСЏ</string>
+    <string name="settings_notifications">РЈРІРµРґРѕРјР»РµРЅРёСЏ</string>
+    <string name="settings_notifications_granted">Р Р°Р·СЂРµС€РµРЅС‹</string>
+    <string name="settings_notifications_denied">Р—Р°РїСЂРµС‰РµРЅС‹</string>
+    <string name="settings_open_system_settings">РћС‚РєСЂС‹С‚СЊ РЅР°СЃС‚СЂРѕР№РєРё</string>
+    <string name="settings_section_about">Рћ РїСЂРёР»РѕР¶РµРЅРёРё</string>
+    <string name="settings_version">Р’РµСЂСЃРёСЏ %1$s</string>
+    <string name="settings_lock_screen_hint">РЈРІРµРґРѕРјР»РµРЅРёРµ РїРѕСЏРІРёС‚СЃСЏ РЅР° СЌРєСЂР°РЅРµ Р±Р»РѕРєРёСЂРѕРІРєРё, РµСЃР»Рё РІ СЃРёСЃС‚РµРјРЅС‹С… РЅР°СЃС‚СЂРѕР№РєР°С… РЅРµ СЃРєСЂС‹С‚Рѕ РµРіРѕ СЃРѕРґРµСЂР¶РёРјРѕРµ.</string>
+
+    <!-- Р Р°Р·СЂРµС€РµРЅРёРµ РЅР° СѓРІРµРґРѕРјР»РµРЅРёСЏ -->
+    <string name="permission_title">РќРµС‚ СЂР°Р·СЂРµС€РµРЅРёСЏ РЅР° СѓРІРµРґРѕРјР»РµРЅРёСЏ</string>
+    <string name="permission_text">Р‘РµР· РЅРµРіРѕ СЂР°СЃРїРёСЃР°РЅРёРµ РЅРµ РїРѕСЏРІРёС‚СЃСЏ РЅР° СЌРєСЂР°РЅРµ Р±Р»РѕРєРёСЂРѕРІРєРё.</string>
+    <string name="permission_grant">Р Р°Р·СЂРµС€РёС‚СЊ</string>
+
+    <!-- РџР»РёС‚РєР° Р±С‹СЃС‚СЂС‹С… РЅР°СЃС‚СЂРѕРµРє -->
+    <string name="tile_subtitle_on">Р’РєР»СЋС‡РµРЅРѕ</string>
+    <string name="tile_subtitle_off">Р’С‹РєР»СЋС‡РµРЅРѕ</string>
+</resources>
