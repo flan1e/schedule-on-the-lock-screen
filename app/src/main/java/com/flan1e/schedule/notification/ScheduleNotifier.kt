@@ -7,6 +7,7 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.flan1e.schedule.MainActivity
 import com.flan1e.schedule.R
+import com.flan1e.schedule.domain.logic.CountdownCalculator
 import com.flan1e.schedule.domain.model.AppSettings
 import com.flan1e.schedule.domain.model.Lesson
 import com.flan1e.schedule.domain.model.LessonOccurrence
@@ -14,6 +15,7 @@ import com.flan1e.schedule.domain.model.ScheduleState
 import com.flan1e.schedule.util.DateTimeText
 import com.flan1e.schedule.util.DurationText
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
 
 /**
@@ -47,6 +49,11 @@ class ScheduleNotifier(private val context: Context) {
                 .setShowWhen(true)
         } else {
             builder.setShowWhen(false)
+        }
+
+        // Полоска прогресса идущей пары: сколько уже прошло от начала до конца.
+        if (content.progressPercent != null) {
+            builder.setProgress(PROGRESS_MAX, content.progressPercent, false)
         }
 
         val bigText = content.bigText
@@ -95,10 +102,15 @@ class ScheduleNotifier(private val context: Context) {
             )
             val following = followingLine(state.following, settings, now)
             NotificationContent(
-                title = ongoingTitle(lesson, settings),
+                title = ongoingTitle(lesson, state.current.end.toLocalTime(), settings),
                 text = headlineText(countdown, lesson, settings),
                 bigText = listOfNotNull(details, countdown, following).joinToString("\n"),
                 countdownTargetMillis = state.current.end.toEpochMillis(),
+                progressPercent = CountdownCalculator.progressPercent(
+                    start = state.current.start,
+                    end = state.current.end,
+                    now = now,
+                ),
             )
         }
 
@@ -152,12 +164,16 @@ class ScheduleNotifier(private val context: Context) {
         )
     }
 
-    /** Заголовок идущей пары: «Идёт: Матанализ». */
-    private fun ongoingTitle(lesson: Lesson, settings: AppSettings): String =
+    /** Заголовок идущей пары: «Идёт: Матанализ · до 11:10». */
+    private fun ongoingTitle(lesson: Lesson, endTime: LocalTime, settings: AppSettings): String =
         if (settings.showTitle) {
-            context.getString(R.string.notification_title_ongoing, lesson.title)
+            context.getString(
+                R.string.notification_title_ongoing_until,
+                lesson.title,
+                DateTimeText.time(endTime),
+            )
         } else {
-            context.getString(R.string.notification_lesson_ongoing)
+            context.getString(R.string.notification_title_ongoing_until_no_name, DateTimeText.time(endTime))
         }
 
     /** Заголовок следующей пары: «Следующая: Физика». */
@@ -254,10 +270,12 @@ class ScheduleNotifier(private val context: Context) {
         val text: String,
         val bigText: String?,
         val countdownTargetMillis: Long?,
+        val progressPercent: Int? = null,
     )
 
     companion object {
         const val NOTIFICATION_ID = 1001
         private const val REQUEST_OPEN_APP = 2001
+        private const val PROGRESS_MAX = 100
     }
 }
