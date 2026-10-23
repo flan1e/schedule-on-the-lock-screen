@@ -33,6 +33,7 @@
     <string name="notification_channel_description">Текущая или следующая пара и обратный отсчёт</string>
     <string name="notification_preparing">Обновление расписания…</string>
     <string name="notification_lesson_ongoing">Идёт пара</string>
+    <string name="notification_title_ongoing">Идёт: %1$s</string>
     <string name="notification_lesson_next">Следующая пара</string>
     <string name="notification_today_finished">Пары на сегодня закончились</string>
     <string name="notification_today_empty">Сегодня пар нет</string>

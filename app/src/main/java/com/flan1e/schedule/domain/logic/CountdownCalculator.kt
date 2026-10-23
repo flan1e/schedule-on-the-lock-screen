@@ -5,11 +5,12 @@ import java.time.Duration
 object CountdownCalculator {
 
     /**
-     * Округляет остаток вверх до целых минут: 45 мин 12 с → 46.
-     * Так «0 мин» не показывается, пока пара ещё идёт.
+     * Округляет остаток вниз до целых минут, чтобы текст совпадал с хронометром
+     * (32:29 → «32 мин»). Меньше минуты отдаётся как 0 — вызывающий код пишет
+     * «меньше минуты».
      */
     fun remainingMinutes(duration: Duration): Long {
         val seconds = duration.seconds.coerceAtLeast(0L)
-        return (seconds + 59L) / 60L
+        return seconds / 60L
     }
 }

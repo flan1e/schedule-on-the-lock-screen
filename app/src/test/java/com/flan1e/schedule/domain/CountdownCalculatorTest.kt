@@ -8,14 +8,14 @@ import java.time.Duration
 class CountdownCalculatorTest {
 
     @Test
-    fun `остаток округляется вверх до минут`() {
-        assertEquals(46L, CountdownCalculator.remainingMinutes(Duration.ofSeconds(45 * 60L + 12)))
+    fun `остаток округляется вниз до минут`() {
+        assertEquals(45L, CountdownCalculator.remainingMinutes(Duration.ofSeconds(45 * 60L + 12)))
     }
 
     @Test
-    fun `меньше минуты округляется до одной минуты`() {
-        assertEquals(1L, CountdownCalculator.remainingMinutes(Duration.ofSeconds(59)))
-        assertEquals(1L, CountdownCalculator.remainingMinutes(Duration.ofSeconds(1)))
+    fun `меньше минуты даёт ноль`() {
+        assertEquals(0L, CountdownCalculator.remainingMinutes(Duration.ofSeconds(59)))
+        assertEquals(0L, CountdownCalculator.remainingMinutes(Duration.ofSeconds(1)))
     }
 
     @Test

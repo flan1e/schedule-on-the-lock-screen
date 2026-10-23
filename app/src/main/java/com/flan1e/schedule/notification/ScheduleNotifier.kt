@@ -95,8 +95,8 @@ class ScheduleNotifier(private val context: Context) {
             )
             val following = followingLine(state.following, settings, now)
             NotificationContent(
-                title = lessonTitle(lesson, settings, R.string.notification_lesson_ongoing),
-                text = details,
+                title = ongoingTitle(lesson, settings),
+                text = headlineText(countdown, lesson, settings),
                 bigText = listOfNotNull(details, countdown, following).joinToString("\n"),
                 countdownTargetMillis = state.current.end.toEpochMillis(),
             )
@@ -105,15 +105,21 @@ class ScheduleNotifier(private val context: Context) {
         is ScheduleState.Upcoming -> {
             val lesson = state.next.lesson
             val details = detailsLine(lesson, settings)
+            // Для пары не на сегодня добавляем день, иначе «До начала 14 ч» непонятно когда.
+            val dayLine = if (state.next.date == now.toLocalDate()) {
+                details
+            } else {
+                DateTimeText.relativeDateLabel(state.next.date, now.toLocalDate(), context) + ", " + details
+            }
             val countdown = context.getString(
                 R.string.notification_until_start,
                 DurationText.format(context, state.untilStart),
             )
             val following = followingLine(state.following, settings, now)
             NotificationContent(
-                title = lessonTitle(lesson, settings, R.string.notification_lesson_next),
-                text = details,
-                bigText = listOfNotNull(details, countdown, following).joinToString("\n"),
+                title = upcomingTitle(lesson, settings),
+                text = headlineText(countdown, lesson, settings),
+                bigText = listOfNotNull(dayLine, countdown, following).joinToString("\n"),
                 countdownTargetMillis = state.next.start.toEpochMillis(),
             )
         }
@@ -146,8 +152,31 @@ class ScheduleNotifier(private val context: Context) {
         )
     }
 
-    private fun lessonTitle(lesson: Lesson, settings: AppSettings, fallbackRes: Int): String =
-        if (settings.showTitle) lesson.title else context.getString(fallbackRes)
+    /** Заголовок идущей пары: «Идёт: Матанализ». */
+    private fun ongoingTitle(lesson: Lesson, settings: AppSettings): String =
+        if (settings.showTitle) {
+            context.getString(R.string.notification_title_ongoing, lesson.title)
+        } else {
+            context.getString(R.string.notification_lesson_ongoing)
+        }
+
+    /** Заголовок следующей пары: «Следующая: Физика». */
+    private fun upcomingTitle(lesson: Lesson, settings: AppSettings): String =
+        if (settings.showTitle) {
+            context.getString(R.string.notification_next, lesson.title)
+        } else {
+            context.getString(R.string.notification_lesson_next)
+        }
+
+    /**
+     * Строка, видимая в свёрнутом уведомлении: сам отсчёт и, если включён,
+     * кабинет. Хронометр справа дополняет её секундами.
+     */
+    private fun headlineText(countdown: String, lesson: Lesson, settings: AppSettings): String {
+        if (!settings.showRoom || lesson.room.isBlank()) return countdown
+        val room = context.getString(R.string.room_prefix, lesson.room)
+        return context.getString(R.string.details_with_room, countdown, room)
+    }
 
     private fun detailsLine(lesson: Lesson, settings: AppSettings): String {
         val range = DateTimeText.timeRange(lesson, context)

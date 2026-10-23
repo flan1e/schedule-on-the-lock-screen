@@ -33,6 +33,7 @@
     <string name="notification_channel_description">Current or next class and countdown</string>
     <string name="notification_preparing">Updating schedule…</string>
     <string name="notification_lesson_ongoing">In class</string>
+    <string name="notification_title_ongoing">In class: %1$s</string>
     <string name="notification_lesson_next">Next class</string>
     <string name="notification_today_finished">Classes are over for today</string>
     <string name="notification_today_empty">No classes today</string>
