@@ -70,6 +70,11 @@
     <string name="editor_field_parity">Повторение</string>
     <string name="editor_field_bell">Сетка звонков</string>
     <string name="editor_bell_period">%1$d · %2$s–%3$s</string>
+    <string name="editor_field_kind">Тип пары</string>
+    <string name="kind_lecture">Лекция</string>
+    <string name="kind_practice">Практика</string>
+    <string name="kind_lab">Лабораторная</string>
+    <string name="kind_other">Другое</string>
     <string name="editor_duration">Длительность: %1$s</string>
     <string name="editor_error_title_required">Введите название</string>
     <string name="editor_error_time_equal">Начало и окончание совпадают</string>

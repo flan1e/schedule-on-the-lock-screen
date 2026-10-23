@@ -32,7 +32,9 @@ class AppContainer(context: Context) {
         appContext,
         AppDatabase::class.java,
         "schedule.db",
-    ).build()
+    )
+        .addMigrations(AppDatabase.MIGRATION_1_2)
+        .build()
 
     val scheduleRepository: ScheduleRepository = RoomScheduleRepository(database.lessonDao())
     val settingsRepository: SettingsRepository

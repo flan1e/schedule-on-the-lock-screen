@@ -4,6 +4,7 @@ import com.flan1e.schedule.data.backup.BackupCodec
 import com.flan1e.schedule.data.backup.BackupFormatException
 import com.flan1e.schedule.data.backup.ScheduleBackup
 import com.flan1e.schedule.domain.model.Lesson
+import com.flan1e.schedule.domain.model.LessonKind
 import com.flan1e.schedule.domain.model.WeekParity
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
@@ -26,6 +27,7 @@ class BackupCodecTest {
                 end = LocalTime.of(10, 0),
                 title = "Матанализ",
                 room = "312",
+                kind = LessonKind.LECTURE,
             ),
             Lesson(
                 dayOfWeek = DayOfWeek.SUNDAY,
@@ -54,6 +56,8 @@ class BackupCodecTest {
         assertEquals(backup.lessons[1].title, decoded.lessons[1].title)
         assertEquals(backup.lessons[1].start, decoded.lessons[1].start)
         assertEquals(backup.lessons[1].end, decoded.lessons[1].end)
+        assertEquals(LessonKind.LECTURE, decoded.lessons[0].kind)
+        assertEquals(LessonKind.OTHER, decoded.lessons[1].kind)
     }
 
     @Test
@@ -148,6 +152,7 @@ class BackupCodecTest {
         val decoded = BackupCodec.decode(json)
 
         assertEquals(WeekParity.EVERY_WEEK, decoded.lessons.single().parity)
+        assertEquals(LessonKind.OTHER, decoded.lessons.single().kind)
     }
 
     @Test

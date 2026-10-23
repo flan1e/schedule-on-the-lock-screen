@@ -1,6 +1,7 @@
 package com.flan1e.schedule.data.backup
 
 import com.flan1e.schedule.domain.model.Lesson
+import com.flan1e.schedule.domain.model.LessonKind
 import com.flan1e.schedule.domain.model.WeekParity
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -50,7 +51,8 @@ object BackupCodec {
             append("\"end\": ").appendJsonString(timeToString(lesson.end)).append(", ")
             append("\"title\": ").appendJsonString(lesson.title).append(", ")
             append("\"room\": ").appendJsonString(lesson.room).append(", ")
-            append("\"parity\": ").appendJsonString(lesson.parity.name)
+            append("\"parity\": ").appendJsonString(lesson.parity.name).append(", ")
+            append("\"kind\": ").appendJsonString(lesson.kind.name)
             append('}')
             if (index != backup.lessons.lastIndex) append(',')
             appendLine()
@@ -120,6 +122,9 @@ object BackupCodec {
         val parity = (obj["parity"] as? String)
             ?.let { name -> WeekParity.entries.firstOrNull { it.name == name } }
             ?: WeekParity.EVERY_WEEK
+        val kind = (obj["kind"] as? String)
+            ?.let(LessonKind::fromName)
+            ?: LessonKind.OTHER
 
         return Lesson(
             dayOfWeek = java.time.DayOfWeek.of(day),
@@ -128,6 +133,7 @@ object BackupCodec {
             title = title,
             room = room,
             parity = parity,
+            kind = kind,
         )
     }
 

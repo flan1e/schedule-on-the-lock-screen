@@ -21,4 +21,5 @@ data class LessonEntity(
     val title: String,
     val room: String,
     val parity: String,
+    val kind: String,
 )

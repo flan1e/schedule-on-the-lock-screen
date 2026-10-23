@@ -1,6 +1,7 @@
 package com.flan1e.schedule.ui.schedule
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,6 +43,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -49,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalConfiguration
 import com.flan1e.schedule.R
 import com.flan1e.schedule.domain.model.Lesson
+import com.flan1e.schedule.domain.model.LessonKind
 import com.flan1e.schedule.domain.model.ScheduleState
 import com.flan1e.schedule.domain.model.WeekParity
 import com.flan1e.schedule.util.DateTimeText
@@ -330,6 +333,15 @@ private fun LessonRow(lesson: Lesson, onClick: () -> Unit) {
             .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.Top,
     ) {
+        Box(
+            Modifier
+                .padding(top = 2.dp)
+                .width(4.dp)
+                .height(40.dp)
+                .clip(RoundedCornerShape(2.dp))
+                .background(lessonKindColor(lesson.kind)),
+        )
+        Spacer(Modifier.width(12.dp))
         Column(Modifier.width(64.dp)) {
             Text(
                 text = DateTimeText.time(lesson.start),
@@ -355,7 +367,17 @@ private fun LessonRow(lesson: Lesson, onClick: () -> Unit) {
             )
             Spacer(Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
+                if (lesson.kind != LessonKind.OTHER) {
+                    Text(
+                        text = stringResource(lessonKindLabelRes(lesson.kind)),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = lessonKindColor(lesson.kind),
+                    )
+                }
                 if (lesson.room.isNotBlank()) {
+                    if (lesson.kind != LessonKind.OTHER) {
+                        Spacer(Modifier.width(8.dp))
+                    }
                     Text(
                         text = stringResource(R.string.schedule_room_prefix, lesson.room),
                         style = MaterialTheme.typography.bodySmall,

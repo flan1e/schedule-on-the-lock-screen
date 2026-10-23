@@ -3,6 +3,7 @@ package com.flan1e.schedule.data.repository
 import com.flan1e.schedule.data.local.LessonDao
 import com.flan1e.schedule.data.local.LessonEntity
 import com.flan1e.schedule.domain.model.Lesson
+import com.flan1e.schedule.domain.model.LessonKind
 import com.flan1e.schedule.domain.model.WeekParity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -54,6 +55,7 @@ internal fun LessonEntity.toDomain(): Lesson = Lesson(
     title = title,
     room = room,
     parity = WeekParity.entries.firstOrNull { it.name == parity } ?: WeekParity.EVERY_WEEK,
+    kind = LessonKind.fromName(kind),
 )
 
 internal fun Lesson.toEntity(): LessonEntity = LessonEntity(
@@ -64,4 +66,5 @@ internal fun Lesson.toEntity(): LessonEntity = LessonEntity(
     title = title,
     room = room,
     parity = parity.name,
+    kind = kind.name,
 )

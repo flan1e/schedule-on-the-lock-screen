@@ -16,6 +16,7 @@ data class Lesson(
     val title: String,
     val room: String,
     val parity: WeekParity = WeekParity.EVERY_WEEK,
+    val kind: LessonKind = LessonKind.OTHER,
 ) {
     /**
      * Пара переходит через полночь, если окончание не позже начала
