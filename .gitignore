@@ -9,3 +9,12 @@ local.properties
 .cxx/
 *.hprof
 .DS_Store
+
+# Ключ и пароли для release-сборки
+keystore.properties
+keystore/
+*.jks
+*.keystore
+
+# Локальные артефакты для публикации
+dist/
