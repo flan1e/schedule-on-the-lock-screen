@@ -7,6 +7,7 @@ package com.flan1e.schedule.domain.model
 enum class LessonKind {
     LECTURE,
     PRACTICE,
+    SEMINAR,
     LAB,
     OTHER,
     ;

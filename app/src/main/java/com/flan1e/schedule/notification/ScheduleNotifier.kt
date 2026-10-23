@@ -17,6 +17,7 @@ import com.flan1e.schedule.domain.model.LessonOccurrence
 import com.flan1e.schedule.domain.model.ScheduleState
 import com.flan1e.schedule.util.DateTimeText
 import com.flan1e.schedule.util.DurationText
+import com.flan1e.schedule.util.LessonKindColors
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
@@ -94,6 +95,13 @@ class ScheduleNotifier(private val context: Context) {
             views.setViewVisibility(R.id.notification_progress, View.VISIBLE)
         }
 
+        val kindColor = content.kindArgb
+        if (kindColor != null) {
+            views.setInt(R.id.notification_kind_stripe, "setBackgroundColor", kindColor)
+        } else {
+            views.setViewVisibility(R.id.notification_kind_stripe, View.GONE)
+        }
+
         views.setOnClickPendingIntent(R.id.notification_root, openAppIntent())
         return views
     }
@@ -145,6 +153,7 @@ class ScheduleNotifier(private val context: Context) {
                     end = state.current.end,
                     now = now,
                 ),
+                kindArgb = LessonKindColors.argb(lesson.kind),
             )
         }
 
@@ -167,6 +176,7 @@ class ScheduleNotifier(private val context: Context) {
                 text = headlineText(countdown, lesson, settings),
                 bigText = listOfNotNull(dayLine, following).joinToString("\n"),
                 countdownTargetMillis = state.next.start.toEpochMillis(),
+                kindArgb = LessonKindColors.argb(lesson.kind),
             )
         }
 
@@ -298,6 +308,7 @@ class ScheduleNotifier(private val context: Context) {
         val bigText: String?,
         val countdownTargetMillis: Long?,
         val progressPercent: Int? = null,
+        val kindArgb: Int? = null,
     )
 
     companion object {

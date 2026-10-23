@@ -73,6 +73,7 @@
     <string name="editor_field_kind">Lesson type</string>
     <string name="kind_lecture">Lecture</string>
     <string name="kind_practice">Practice</string>
+    <string name="kind_seminar">Seminar</string>
     <string name="kind_lab">Lab</string>
     <string name="kind_other">Other</string>
     <string name="editor_duration">Duration: %1$s</string>

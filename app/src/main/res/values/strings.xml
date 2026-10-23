@@ -73,6 +73,7 @@
     <string name="editor_field_kind">Тип пары</string>
     <string name="kind_lecture">Лекция</string>
     <string name="kind_practice">Практика</string>
+    <string name="kind_seminar">Семинар</string>
     <string name="kind_lab">Лабораторная</string>
     <string name="kind_other">Другое</string>
     <string name="editor_duration">Длительность: %1$s</string>
