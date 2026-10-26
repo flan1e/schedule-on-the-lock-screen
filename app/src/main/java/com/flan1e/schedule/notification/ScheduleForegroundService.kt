@@ -3,7 +3,10 @@ package com.flan1e.schedule.notification
 import android.app.Notification
 import android.app.Service
 import android.Manifest
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.pm.ServiceInfo
@@ -43,11 +46,33 @@ class ScheduleForegroundService : Service() {
     @Volatile
     private var lastTick: Tick? = null
 
+    /**
+     * Некоторые прошивки (MIUI/HyperOS) замораживают процесс, пока экран выключен
+     * или устройство заблокировано, поэтому минутный тик может не сработать.
+     * При включении экрана и разблокировке пересчитываем состояние сразу.
+     */
+    private val wakeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            lastTick?.let { post(it.copy(now = LocalDateTime.now())) }
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
         container = (application as ScheduleApplication).container
         NotificationChannels.ensure(this)
         startInForeground(container.notifier.buildLoading())
+
+        val wakeFilter = IntentFilter().apply {
+            addAction(Intent.ACTION_SCREEN_ON)
+            addAction(Intent.ACTION_USER_PRESENT)
+        }
+        ContextCompat.registerReceiver(
+            this,
+            wakeReceiver,
+            wakeFilter,
+            ContextCompat.RECEIVER_NOT_EXPORTED,
+        )
 
         scope.launch {
             combine(
@@ -104,6 +129,7 @@ class ScheduleForegroundService : Service() {
 
     override fun onDestroy() {
         scope.cancel()
+        runCatching { unregisterReceiver(wakeReceiver) }
         stopForeground(STOP_FOREGROUND_REMOVE)
         super.onDestroy()
     }

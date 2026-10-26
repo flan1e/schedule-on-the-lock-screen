@@ -15,8 +15,8 @@ android {
         applicationId = "com.flan1e.schedule"
         minSdk = 26
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.1.0"
+        versionCode = 3
+        versionName = "1.1.1"
     }
 
     // Ключ и пароли лежат в keystore.properties (в .gitignore).
